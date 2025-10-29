@@ -1,0 +1,42 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../../models/product.dart';
+
+// Simple product details page showing title, image, price and description.
+class ProductDetailPage extends StatelessWidget {
+  const ProductDetailPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final Product product = Get.arguments as Product;
+    return Scaffold(
+      appBar: AppBar(title: Text(product.title)),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Center(
+              child: Image.network(product.image, height: 220, fit: BoxFit.contain),
+            ),
+            const SizedBox(height: 16),
+            Text(product.title, style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 8),
+            Row(
+              children: <Widget>[
+                Chip(label: Text(product.category)),
+                const SizedBox(width: 8),
+                Text('\$${product.price.toStringAsFixed(2)}', style: Theme.of(context).textTheme.titleMedium),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(product.description),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
