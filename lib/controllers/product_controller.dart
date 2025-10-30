@@ -14,6 +14,7 @@ class ProductController extends GetxController {
 
 
   final int pageSize = 8;
+  
   final RxInt currentPage = 1.obs;
 
   List<Product> get pagedProducts {

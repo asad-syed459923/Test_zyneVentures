@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../controllers/auth_controller.dart';
+import '../../widgets/app_text_field.dart';
 
 
 class SignupPage extends StatelessWidget {
@@ -11,45 +12,40 @@ class SignupPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final AuthController auth = Get.find<AuthController>();
     final TextEditingController emailCtrl = TextEditingController();
-    final TextEditingController usernameCtrl = TextEditingController();
     final TextEditingController passwordCtrl = TextEditingController();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Sign up')),
+      appBar: AppBar(title: const Text('Create your account')),
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 420),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Obx(() => Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    TextField(controller: emailCtrl, decoration: const InputDecoration(labelText: 'Email')),
-                    const SizedBox(height: 12),
-                    TextField(controller: usernameCtrl, decoration: const InputDecoration(labelText: 'Username')),
-                    const SizedBox(height: 12),
-                    TextField(
-                      controller: passwordCtrl,
-                      decoration: const InputDecoration(labelText: 'Password'),
-                      obscureText: true,
+            child: Obx(() => Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Text('Sign up', style: Theme.of(context).textTheme.titleLarge),
+                        const SizedBox(height: 12),
+                        AppTextField(controller: emailCtrl, label: 'Email', keyboardType: TextInputType.emailAddress, prefixIcon: Icons.email_outlined),
+                        const SizedBox(height: 12),
+                        AppTextField(controller: passwordCtrl, label: 'Password', obscureText: true, prefixIcon: Icons.lock_outline),
+                        const SizedBox(height: 16),
+                        FilledButton.icon(
+                          onPressed: auth.isLoading.value
+                              ? null
+                              : () => auth.signup(email: emailCtrl.text.trim(), password: passwordCtrl.text),
+                          icon: auth.isLoading.value
+                              ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                              : const Icon(Icons.person_add_alt),
+                          label: const Text('Create account'),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 16),
-                    SizedBox(
-                      width: double.infinity,
-                      child: FilledButton(
-                        onPressed: auth.isLoading.value
-                            ? null
-                            : () => auth.signup(
-                                  email: emailCtrl.text.trim(),
-                                  username: usernameCtrl.text.trim(),
-                                  password: passwordCtrl.text,
-                                ),
-                        child: auth.isLoading.value
-                            ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                            : const Text('Create account'),
-                      ),
-                    ),
-                  ],
+                  ),
                 )),
           ),
         ),

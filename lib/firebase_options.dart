@@ -65,4 +65,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'testzyneventures.firebasestorage.app',
     iosBundleId: 'com.example.testZyneventures',
   );
+
 }

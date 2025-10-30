@@ -1,5 +1,5 @@
-
 class AppRoutes {
+  static const String root = '/';
   static const String login = '/login';
   static const String signup = '/signup';
   static const String forgotPassword = '/forgot-password';
@@ -8,5 +8,3 @@ class AppRoutes {
   static const String productDetail = '/product-detail';
   static const String productForm = '/product-form';
 }
-
-

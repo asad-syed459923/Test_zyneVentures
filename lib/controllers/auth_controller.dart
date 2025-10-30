@@ -1,69 +1,87 @@
-import "package:get/get.dart";
-
+import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../routes/app_routes.dart';
-import '../services/api_service.dart';
-
 
 class AuthController extends GetxController {
-  AuthController({ApiService? apiService}) : _api = apiService ?? ApiService();
-
-  final ApiService _api;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final RxBool isLoading = false.obs;
-  final RxnString token = RxnString();
+  final Rxn<User> firebaseUser = Rxn<User>();
 
-  
-  Future<void> login(String username, String password) async {
+  @override
+  void onInit() {
+    firebaseUser.bindStream(_auth.authStateChanges());
+    super.onInit();
+  }
+
+  bool get isLoggedIn => firebaseUser.value != null;
+
+  Future<void> login(String email, String password) async {
     isLoading.value = true;
+    if (!GetUtils.isEmail(email)) {
+      Get.snackbar('Invalid Email', 'Please enter a valid email.');
+      isLoading.value = false;
+      return;
+    }
+    if (password.length < 6) {
+      Get.snackbar('Invalid Password', 'Password must be at least 6 characters.');
+      isLoading.value = false;
+      return;
+    }
     try {
-      final String t = await _api.login(username: username, password: password);
-      token.value = t;
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
       Get.offAllNamed(AppRoutes.products);
-    } catch (e) {
-      Get.snackbar('Login failed', '$e');
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar('Login failed', e.message ?? '');
     } finally {
       isLoading.value = false;
     }
   }
 
-  
-  Future<void> signup({required String email, required String username, required String password}) async {
+  Future<void> signup({required String email, required String password}) async {
     isLoading.value = true;
+    if (!GetUtils.isEmail(email)) {
+      Get.snackbar('Invalid Email', 'Please enter a valid email.');
+      isLoading.value = false;
+      return;
+    }
+    if (password.length < 6) {
+      Get.snackbar('Invalid Password', 'Password must be at least 6 characters.');
+      isLoading.value = false;
+      return;
+    }
     try {
-      final bool ok = await _api.signup(email: email, username: username, password: password);
-      if (ok) {
-        Get.snackbar('Signup successful', 'You can now login.');
-        Get.offAllNamed(AppRoutes.login);
-      } else {
-        Get.snackbar('Signup failed', 'Please try again later.');
-      }
-    } catch (e) {
-      Get.snackbar('Signup failed', '$e');
+      await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      Get.snackbar('Signup successful', 'Account created. You are now logged in.');
+      Get.offAllNamed(AppRoutes.products);
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar('Signup failed', e.message ?? '');
     } finally {
       isLoading.value = false;
     }
   }
 
-  
-  void logout() {
-    token.value = null;
+  void logout() async {
+    await _auth.signOut();
     Get.offAllNamed(AppRoutes.login);
   }
 
-  
   Future<void> forgotPassword(String email) async {
     isLoading.value = true;
-    await Future<void>.delayed(const Duration(seconds: 1));
-    isLoading.value = false;
-    Get.snackbar('Email sent', 'If $email exists, instructions were sent.');
-    Get.toNamed(AppRoutes.resetPassword);
-  }
-
-  Future<void> resetPassword({required String email, required String newPassword}) async {
-    isLoading.value = true;
-    await Future<void>.delayed(const Duration(seconds: 1));
-    isLoading.value = false;
-    Get.snackbar('Password reset', 'You can now login with the new password.');
-    Get.offAllNamed(AppRoutes.login);
+    if (!GetUtils.isEmail(email)) {
+      
+      Get.snackbar('Invalid Email', 'Please enter a valid email.');
+      isLoading.value = false;
+      return;
+    }
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      Get.snackbar('Reset Email Sent', 'Check your inbox to reset your password.');
+      Get.offAllNamed(AppRoutes.login);
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar('Reset failed', e.message ?? '');
+    } finally {
+      isLoading.value = false;
+    }
   }
 }
 

@@ -17,12 +17,16 @@ class ProductGridItem extends StatelessWidget {
       onTap: onTap,
       child: Card(
         clipBehavior: Clip.antiAlias,
+        elevation: 3,
         child: Column(
           children: <Widget>[
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Image.network(product.image, fit: BoxFit.contain),
+                child: Hero(
+                  tag: 'product_${product.id ?? product.title}',
+                  child: Image.network(product.image, fit: BoxFit.contain),
+                ),
               ),
             ),
             Padding(
@@ -43,8 +47,8 @@ class ProductGridItem extends StatelessWidget {
                       Text('\$${product.price.toStringAsFixed(2)}'),
                       Row(
                         children: <Widget>[
-                          IconButton(onPressed: onEdit, icon: const Icon(Icons.edit, size: 18)),
-                          IconButton(onPressed: onDelete, icon: const Icon(Icons.delete, size: 18)),
+                          IconButton(onPressed: onEdit, icon: const Icon(Icons.edit_outlined, size: 18)),
+                          IconButton(onPressed: onDelete, icon: const Icon(Icons.delete_outline, size: 18)),
                         ],
                       ),
                     ],
