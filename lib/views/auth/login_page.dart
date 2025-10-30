@@ -4,8 +4,7 @@ import 'package:get/get.dart';
 import '../../controllers/auth_controller.dart';
 import '../../routes/app_routes.dart';
 
-
-class    extends StatelessWidget {
+class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
   @override

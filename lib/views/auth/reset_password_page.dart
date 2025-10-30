@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import '../../controllers/auth_controller.dart';
 
-// Reset password screen (mocked flow).
+
 class ResetPasswordPage extends StatelessWidget {
   const ResetPasswordPage({super.key});
 

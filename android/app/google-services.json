@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1041281200369",
+    "project_id": "testzyneventures",
+    "storage_bucket": "testzyneventures.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1041281200369:android:8f1ac8328376fa8b77b950",
+        "android_client_info": {
+          "package_name": "com.example.test_zyneventures"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLnCz9uVvXJK0PXjLjwj2GeteTJkKhhqU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

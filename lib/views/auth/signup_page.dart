@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import '../../controllers/auth_controller.dart';
 
-// Signup screen creating a user on Fake Store API.
+
 class SignupPage extends StatelessWidget {
   const SignupPage({super.key});
 

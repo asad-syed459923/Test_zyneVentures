@@ -5,14 +5,14 @@ import 'package:http/http.dart' as http;
 
 import '../models/product.dart';
 
-// Thin wrapper around Fake Store API with basic error handling.
+
 class ApiService {
   ApiService({http.Client? client}) : _client = client ?? http.Client();
 
   static const String _baseUrl = 'https://fakestoreapi.com';
   final http.Client _client;
 
-  // Logs in with Fake Store API and returns a JWT token string.
+  
   Future<String> login({required String username, required String password}) async {
     final Uri url = Uri.parse('$_baseUrl/auth/login');
     try {
@@ -38,7 +38,7 @@ class ApiService {
     }
   }
 
-  // Signs up a user (Fake Store stores users but does not issue token). Returns true if created.
+  
   Future<bool> signup({
     required String email,
     required String username,
@@ -73,7 +73,7 @@ class ApiService {
     }
   }
 
-  // Fetches all products (the API supports limit but not page/offset reliably).
+  
   Future<List<Product>> fetchProducts() async {
     final Uri url = Uri.parse('$_baseUrl/products');
     try {
@@ -90,7 +90,7 @@ class ApiService {
     }
   }
 
-  // Adds a new product. The API returns the created product with id.
+  
   Future<Product> addProduct(Product product) async {
     final Uri url = Uri.parse('$_baseUrl/products');
     try {
@@ -108,7 +108,7 @@ class ApiService {
     }
   }
 
-  // Updates an existing product by id.
+  
   Future<Product> updateProduct(Product product) async {
     if (product.id == null) {
       throw const HttpException('Product id is required for update');
@@ -129,7 +129,7 @@ class ApiService {
     }
   }
 
-  // Deletes a product by id.
+  
   Future<bool> deleteProduct(int id) async {
     final Uri url = Uri.parse('$_baseUrl/products/$id');
     try {

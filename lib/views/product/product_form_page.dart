@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import '../../controllers/product_controller.dart';
 import '../../models/product.dart';
 
-// Form for adding or editing a product via Fake Store API.
+
 class ProductFormPage extends StatelessWidget {
   const ProductFormPage({super.key});
 

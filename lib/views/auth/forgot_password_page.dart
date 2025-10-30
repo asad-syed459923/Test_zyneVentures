@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package/get/get.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+
 
 import '../../controllers/auth_controller.dart';
 
-// Forgot password screen (mocked flow).
+
 class ForgotPasswordPage extends StatelessWidget {
   const ForgotPasswordPage({super.key});
 

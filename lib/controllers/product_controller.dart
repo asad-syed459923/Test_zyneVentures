@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import '../models/product.dart';
 import '../services/api_service.dart';
 
-// GetX controller to manage product list, pagination, and CRUD.
+
 class ProductController extends GetxController {
   ProductController({ApiService? apiService}) : _api = apiService ?? ApiService();
 
@@ -12,7 +12,7 @@ class ProductController extends GetxController {
   final RxBool isLoading = false.obs;
   final RxString error = ''.obs;
 
-  // Pagination settings
+
   final int pageSize = 8;
   final RxInt currentPage = 1.obs;
 

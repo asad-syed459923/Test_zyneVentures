@@ -7,7 +7,7 @@ import '../../models/product.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/product_grid_item.dart';
 
-// Products grid with simple client-side pagination.
+
 class ProductsPage extends StatelessWidget {
   const ProductsPage({super.key});
 

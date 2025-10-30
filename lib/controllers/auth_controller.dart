@@ -3,7 +3,7 @@ import "package:get/get.dart";
 import '../routes/app_routes.dart';
 import '../services/api_service.dart';
 
-// Controller to handle authentication flows using GetX.
+
 class AuthController extends GetxController {
   AuthController({ApiService? apiService}) : _api = apiService ?? ApiService();
 
@@ -11,7 +11,7 @@ class AuthController extends GetxController {
   final RxBool isLoading = false.obs;
   final RxnString token = RxnString();
 
-  // Perform login via Fake Store API and navigate to products on success.
+  
   Future<void> login(String username, String password) async {
     isLoading.value = true;
     try {
@@ -25,7 +25,7 @@ class AuthController extends GetxController {
     }
   }
 
-  // Create a user record via Fake Store API (no token issued by API).
+  
   Future<void> signup({required String email, required String username, required String password}) async {
     isLoading.value = true;
     try {
@@ -43,13 +43,13 @@ class AuthController extends GetxController {
     }
   }
 
-  // Local-only logout (drops token and navigates to login page).
+  
   void logout() {
     token.value = null;
     Get.offAllNamed(AppRoutes.login);
   }
 
-  // Mock forgot/reset workflows as the API does not support it.
+  
   Future<void> forgotPassword(String email) async {
     isLoading.value = true;
     await Future<void>.delayed(const Duration(seconds: 1));

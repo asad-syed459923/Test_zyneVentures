@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import '../../models/product.dart';
 
-// Simple product details page showing title, image, price and description.
+
 class ProductDetailPage extends StatelessWidget {
   const ProductDetailPage({super.key});
 
