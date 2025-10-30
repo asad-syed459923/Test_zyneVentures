@@ -82,27 +82,6 @@ class ProductsPage extends StatelessWidget {
         final List<Product> items = currentCat == 'All'
             ? baseItems
             : baseItems.where((Product p) => p.category == currentCat).toList();
-        if (items.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.inventory_2_outlined, size: 64, color: Colors.grey),
-                const SizedBox(height: 16),
-                const Text(
-                  'No products found',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                ),
-                const SizedBox(height: 8),
-                TextButton.icon(
-                  onPressed: () => Get.toNamed(AppRoutes.productForm),
-                  icon: const Icon(Icons.add),
-                  label: const Text('Add your first product'),
-                ),
-              ],
-            ),
-          );
-        }
 
         return Column(
           children: <Widget>[
@@ -126,25 +105,42 @@ class ProductsPage extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: GridView.builder(
-                padding: const EdgeInsets.all(16),
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 260,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  childAspectRatio: 0.78,
-                ),
-                itemCount: items.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final Product p = items[index];
-                  return ProductGridItem(
-                    product: p,
-                    onTap: () => Get.toNamed(AppRoutes.productDetail, arguments: p),
-                    onEdit: () => Get.toNamed(AppRoutes.productForm, arguments: p),
-                    onDelete: () => controller.deleteProduct(p.id!),
-                  );
-                },
-              ),
+              child: items.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          const Icon(Icons.inventory_2_outlined, size: 64, color: Colors.grey),
+                          const SizedBox(height: 16),
+                          const Text('No products found', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                          const SizedBox(height: 8),
+                          TextButton.icon(
+                            onPressed: () => Get.toNamed(AppRoutes.productForm),
+                            icon: const Icon(Icons.add),
+                            label: const Text('Add your first product'),
+                          ),
+                        ],
+                      ),
+                    )
+                  : GridView.builder(
+                      padding: const EdgeInsets.all(16),
+                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 240,
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                        childAspectRatio: 0.70,
+                      ),
+                      itemCount: items.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final Product p = items[index];
+                        return ProductGridItem(
+                          product: p,
+                          onTap: () => Get.toNamed(AppRoutes.productDetail, arguments: p),
+                          onEdit: () => Get.toNamed(AppRoutes.productForm, arguments: p),
+                          onDelete: () => controller.deleteProduct(p.id!),
+                        );
+                      },
+                    ),
             ),
             // Pagination
             Container(

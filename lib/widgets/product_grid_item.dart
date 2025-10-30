@@ -60,26 +60,29 @@ class ProductGridItem extends StatelessWidget {
                            child: LayoutBuilder(
                              builder: (BuildContext context, BoxConstraints constraints) {
                                final int cacheWidth = (constraints.maxWidth * MediaQuery.of(context).devicePixelRatio).round();
-                               return Image.network(
-                                 product.image,
-                                 fit: BoxFit.cover,
-                                 width: double.infinity,
-                                 height: double.infinity,
-                                 filterQuality: FilterQuality.medium,
-                                 cacheWidth: cacheWidth > 0 ? cacheWidth : null,
-                                 loadingBuilder: (context, child, progress) {
-                                   if (progress == null) return child;
-                                   return Center(
-                                     child: CircularProgressIndicator(
-                                       strokeWidth: 2,
-                                       value: progress.expectedTotalBytes != null
-                                           ? progress.cumulativeBytesLoaded / progress.expectedTotalBytes!
-                                           : null,
-                                     ),
-                                   );
-                                 },
-                                 errorBuilder: (_, __, ___) => const Center(
-                                   child: Icon(Icons.image_not_supported_outlined, size: 40, color: Colors.grey),
+                               return Padding(
+                                 padding: const EdgeInsets.all(10.0),
+                                 child: Image.network(
+                                   product.image,
+                                   fit: BoxFit.cover,
+                                   width: double.infinity,
+                                   height: double.infinity,
+                                   filterQuality: FilterQuality.medium,
+                                   cacheWidth: cacheWidth > 0 ? cacheWidth : null,
+                                   loadingBuilder: (context, child, progress) {
+                                     if (progress == null) return child;
+                                     return Center(
+                                       child: CircularProgressIndicator(
+                                         strokeWidth: 2,
+                                         value: progress.expectedTotalBytes != null
+                                             ? progress.cumulativeBytesLoaded / progress.expectedTotalBytes!
+                                             : null,
+                                       ),
+                                     );
+                                   },
+                                   errorBuilder: (_, __, ___) => const Center(
+                                     child: Icon(Icons.image_not_supported_outlined, size: 40, color: Colors.grey),
+                                   ),
                                  ),
                                );
                              },
@@ -99,7 +102,6 @@ class ProductGridItem extends StatelessWidget {
                       ),
                     ),
                   ),
-                   // Category badge (pill with icon)
                    Positioned(
                      top: 8,
                      left: 8,
@@ -138,8 +140,6 @@ class ProductGridItem extends StatelessWidget {
                    ),
                 ],
               ),
-
-              // --- Product Info Section ---
                Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(12),
@@ -164,7 +164,6 @@ class ProductGridItem extends StatelessWidget {
                          ),
                        ),
                       const Spacer(),
-                      // --- Price + Action Buttons ---
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
