@@ -37,13 +37,21 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
   void onSubmit() {
     final double? price = double.tryParse(priceCtrl.text.trim());
-    if (titleCtrl.text.trim().isEmpty || price == null || imageCtrl.text.trim().isEmpty) {
-      Get.snackbar('Invalid input', 'Please fill title, valid price and image URL');
+    if (titleCtrl.text.trim().isEmpty ||
+        price == null ||
+        imageCtrl.text.trim().isEmpty) {
+      Get.snackbar(
+        'Invalid input',
+        'Please fill title, valid price and image URL',
+      );
       return;
     }
-    final String categoryValue = (selectedCategory == null || selectedCategory!.isEmpty)
-        ? (customCategoryCtrl.text.trim().isEmpty ? 'misc' : customCategoryCtrl.text.trim())
-        : selectedCategory!;
+    final String categoryValue =
+        (selectedCategory == null || selectedCategory!.isEmpty)
+            ? (customCategoryCtrl.text.trim().isEmpty
+                ? 'misc'
+                : customCategoryCtrl.text.trim())
+            : selectedCategory!;
 
     final Product payload = Product(
       id: editing?.id,
@@ -66,14 +74,18 @@ class _ProductFormPageState extends State<ProductFormPage> {
     final ColorScheme scheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(title: Text(isEdit ? 'Edit product' : 'Add product')),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 720),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Obx(() => Card(
+      body: SingleChildScrollView(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 720),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Obx(
+                () => Card(
                   elevation: 3,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
@@ -81,11 +93,15 @@ class _ProductFormPageState extends State<ProductFormPage> {
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            Icon(Icons.inventory_2_outlined, color: scheme.primary),
+                            Icon(
+                              Icons.inventory_2_outlined,
+                              color: scheme.primary,
+                            ),
                             const SizedBox(width: 8),
                             Text(
                               isEdit ? 'Edit product' : 'Add product',
-                              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+                              style: Theme.of(context).textTheme.titleLarge
+                                  ?.copyWith(fontWeight: FontWeight.w700),
                             ),
                           ],
                         ),
@@ -100,19 +116,36 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                   Container(
                                     height: 180,
                                     decoration: BoxDecoration(
-                                      color: scheme.surfaceVariant.withOpacity(0.3),
+                                      color: scheme.surfaceVariant.withOpacity(
+                                        0.3,
+                                      ),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     alignment: Alignment.center,
-                                    child: imageCtrl.text.trim().isEmpty
-                                        ? const Icon(Icons.image_outlined, size: 48, color: Colors.grey)
-                                        : Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Image.network(imageCtrl.text.trim(), fit: BoxFit.contain),
-                                          ),
+                                    child:
+                                        imageCtrl.text.trim().isEmpty
+                                            ? const Icon(
+                                              Icons.image_outlined,
+                                              size: 48,
+                                              color: Colors.grey,
+                                            )
+                                            : Padding(
+                                              padding: const EdgeInsets.all(
+                                                8.0,
+                                              ),
+                                              child: Image.network(
+                                                imageCtrl.text.trim(),
+                                                fit: BoxFit.contain,
+                                              ),
+                                            ),
                                   ),
                                   const SizedBox(height: 12),
-                                  TextField(controller: imageCtrl, decoration: const InputDecoration(labelText: 'Image URL')),
+                                  TextField(
+                                    controller: imageCtrl,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Image URL',
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -121,17 +154,43 @@ class _ProductFormPageState extends State<ProductFormPage> {
                             Expanded(
                               child: Column(
                                 children: <Widget>[
-                                  TextField(controller: titleCtrl, decoration: const InputDecoration(labelText: 'Title')),
+                                  TextField(
+                                    controller: titleCtrl,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Title',
+                                    ),
+                                  ),
                                   const SizedBox(height: 12),
-                                  TextField(controller: priceCtrl, decoration: const InputDecoration(labelText: 'Price'), keyboardType: TextInputType.number),
+                                  TextField(
+                                    controller: priceCtrl,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Price',
+                                    ),
+                                    keyboardType: TextInputType.number,
+                                  ),
                                   const SizedBox(height: 12),
                                   Align(
                                     alignment: Alignment.centerLeft,
                                     child: DropdownButtonFormField<String>(
-                                      value: controller.categories.contains(selectedCategory) ? selectedCategory : null,
+                                      value:
+                                          controller.categories.contains(
+                                                selectedCategory,
+                                              )
+                                              ? selectedCategory
+                                              : null,
                                       items: <DropdownMenuItem<String>>[
-                                        ...controller.categories.map((c) => DropdownMenuItem<String>(value: c, child: Text(c))).toList(),
-                                        const DropdownMenuItem<String>(value: '__custom__', child: Text('Other…')),
+                                        ...controller.categories
+                                            .map(
+                                              (c) => DropdownMenuItem<String>(
+                                                value: c,
+                                                child: Text(c),
+                                              ),
+                                            )
+                                            .toList(),
+                                        const DropdownMenuItem<String>(
+                                          value: '__custom__',
+                                          child: Text('Other…'),
+                                        ),
                                       ],
                                       onChanged: (value) {
                                         setState(() {
@@ -142,16 +201,32 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                           }
                                         });
                                       },
-                                      decoration: const InputDecoration(labelText: 'Category'),
-                                      icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                                      decoration: const InputDecoration(
+                                        labelText: 'Category',
+                                      ),
+                                      icon: const Icon(
+                                        Icons.keyboard_arrow_down_rounded,
+                                      ),
                                     ),
                                   ),
-                                  if (selectedCategory == null || selectedCategory!.isEmpty) ...<Widget>[
+                                  if (selectedCategory == null ||
+                                      selectedCategory!.isEmpty) ...<Widget>[
                                     const SizedBox(height: 12),
-                                    TextField(controller: customCategoryCtrl, decoration: const InputDecoration(labelText: 'Custom category')),
+                                    TextField(
+                                      controller: customCategoryCtrl,
+                                      decoration: const InputDecoration(
+                                        labelText: 'Custom category',
+                                      ),
+                                    ),
                                   ],
                                   const SizedBox(height: 12),
-                                  TextField(controller: descCtrl, decoration: const InputDecoration(labelText: 'Description'), maxLines: 4),
+                                  TextField(
+                                    controller: descCtrl,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Description',
+                                    ),
+                                    maxLines: 4,
+                                  ),
                                 ],
                               ),
                             ),
@@ -161,10 +236,18 @@ class _ProductFormPageState extends State<ProductFormPage> {
                         SizedBox(
                           width: double.infinity,
                           child: FilledButton(
-                            onPressed: controller.isLoading.value ? null : onSubmit,
-                            child: controller.isLoading.value
-                                ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                                : Text(isEdit ? 'Save changes' : 'Create'),
+                            onPressed:
+                                controller.isLoading.value ? null : onSubmit,
+                            child:
+                                controller.isLoading.value
+                                    ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                    : Text(isEdit ? 'Save changes' : 'Create'),
                           ),
                         ),
                         if (controller.categories.isEmpty)
@@ -172,18 +255,21 @@ class _ProductFormPageState extends State<ProductFormPage> {
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
                               'Tip: Categories are populated from existing products. You can add a custom one.',
-                              style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 12),
+                              style: TextStyle(
+                                color: scheme.onSurfaceVariant,
+                                fontSize: 12,
+                              ),
                             ),
                           ),
                       ],
                     ),
                   ),
-                )),
+                ),
+              ),
+            ),
           ),
         ),
       ),
     );
   }
 }
-
-

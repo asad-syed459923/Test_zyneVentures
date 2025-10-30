@@ -13,12 +13,18 @@ class ProductsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ProductController controller = Get.put(ProductController());
-    final AuthController auth = Get.isRegistered() ?  Get.find<AuthController>() : Get.put(AuthController());
+    final AuthController auth =
+        Get.isRegistered()
+            ? Get.find<AuthController>()
+            : Get.put(AuthController());
     final RxString selectedCategory = 'All'.obs;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Products', style: TextStyle(fontWeight: FontWeight.w600)),
+        title: const Text(
+          'Products',
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
         actions: <Widget>[
           IconButton(
             onPressed: () => controller.loadProducts(),
@@ -76,12 +82,18 @@ class ProductsPage extends StatelessWidget {
         }
 
         // Category filtering
-        final List<String> categoryOptions = <String>['All', ...controller.categories];
+        final List<String> categoryOptions = <String>[
+          'All',
+          ...controller.categories,
+        ];
         final String currentCat = selectedCategory.value;
         final List<Product> baseItems = controller.pagedProducts;
-        final List<Product> items = currentCat == 'All'
-            ? baseItems
-            : baseItems.where((Product p) => p.category == currentCat).toList();
+        final List<Product> items =
+            currentCat == 'All'
+                ? baseItems
+                : baseItems
+                    .where((Product p) => p.category == currentCat)
+                    .toList();
 
         return Column(
           children: <Widget>[
@@ -92,55 +104,84 @@ class ProductsPage extends StatelessWidget {
                 children: <Widget>[
                   const Text('Category:'),
                   const SizedBox(width: 12),
-                  Obx(() => DropdownButton<String>(
-                        value: selectedCategory.value,
-                        items: categoryOptions
-                            .map((String c) => DropdownMenuItem<String>(value: c, child: Text(c)))
-                            .toList(),
-                        onChanged: (String? value) {
-                          if (value != null) selectedCategory.value = value;
-                        },
-                      )),
+                  Obx(
+                    () => DropdownButton<String>(
+                      value: selectedCategory.value,
+                      items:
+                          categoryOptions
+                              .map(
+                                (String c) => DropdownMenuItem<String>(
+                                  value: c,
+                                  child: Text(c),
+                                ),
+                              )
+                              .toList(),
+                      onChanged: (String? value) {
+                        if (value != null) selectedCategory.value = value;
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),
             Expanded(
-              child: items.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          const Icon(Icons.inventory_2_outlined, size: 64, color: Colors.grey),
-                          const SizedBox(height: 16),
-                          const Text('No products found', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
-                          const SizedBox(height: 8),
-                          TextButton.icon(
-                            onPressed: () => Get.toNamed(AppRoutes.productForm),
-                            icon: const Icon(Icons.add),
-                            label: const Text('Add your first product'),
-                          ),
-                        ],
+              child:
+                  items.isEmpty
+                      ? Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            const Icon(
+                              Icons.inventory_2_outlined,
+                              size: 64,
+                              color: Colors.grey,
+                            ),
+                            const SizedBox(height: 16),
+                            const Text(
+                              'No products found',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            TextButton.icon(
+                              onPressed:
+                                  () => Get.toNamed(AppRoutes.productForm),
+                              icon: const Icon(Icons.add),
+                              label: const Text('Add your first product'),
+                            ),
+                          ],
+                        ),
+                      )
+                      : GridView.builder(
+                        padding: const EdgeInsets.all(16),
+                        gridDelegate:
+                            const SliverGridDelegateWithMaxCrossAxisExtent(
+                              maxCrossAxisExtent: 280,
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 16,
+                              childAspectRatio: 0.70,
+                            ),
+                        itemCount: items.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final Product p = items[index];
+                          return ProductGridItem(
+                            product: p,
+                            onTap:
+                                () => Get.toNamed(
+                                  AppRoutes.productDetail,
+                                  arguments: p,
+                                ),
+                            onEdit:
+                                () => Get.toNamed(
+                                  AppRoutes.productForm,
+                                  arguments: p,
+                                ),
+                            onDelete: () => controller.deleteProduct(p.id!),
+                          );
+                        },
                       ),
-                    )
-                  : GridView.builder(
-                      padding: const EdgeInsets.all(16),
-                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 240,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
-                        childAspectRatio: 0.70,
-                      ),
-                      itemCount: items.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final Product p = items[index];
-                        return ProductGridItem(
-                          product: p,
-                          onTap: () => Get.toNamed(AppRoutes.productDetail, arguments: p),
-                          onEdit: () => Get.toNamed(AppRoutes.productForm, arguments: p),
-                          onDelete: () => controller.deleteProduct(p.id!),
-                        );
-                      },
-                    ),
             ),
             // Pagination
             Container(
@@ -159,12 +200,18 @@ class ProductsPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   IconButton(
-                    onPressed: controller.currentPage.value > 1 ? controller.prevPage : null,
+                    onPressed:
+                        controller.currentPage.value > 1
+                            ? controller.prevPage
+                            : null,
                     icon: const Icon(Icons.chevron_left),
                     tooltip: 'Previous page',
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.primaryContainer,
                       borderRadius: BorderRadius.circular(20),
@@ -178,7 +225,10 @@ class ProductsPage extends StatelessWidget {
                     ),
                   ),
                   IconButton(
-                    onPressed: controller.currentPage.value < controller.totalPages ? controller.nextPage : null,
+                    onPressed:
+                        controller.currentPage.value < controller.totalPages
+                            ? controller.nextPage
+                            : null,
                     icon: const Icon(Icons.chevron_right),
                     tooltip: 'Next page',
                   ),
@@ -191,5 +241,3 @@ class ProductsPage extends StatelessWidget {
     );
   }
 }
-
-
