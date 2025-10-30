@@ -5,6 +5,7 @@ import 'package:get/get_core/src/get_main.dart';
 
 import '../../controllers/auth_controller.dart';
 import '../../widgets/app_text_field.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 
 class ForgotPasswordPage extends StatelessWidget {
@@ -29,7 +30,13 @@ class ForgotPasswordPage extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                        Text('Reset your password', style: Theme.of(context).textTheme.titleLarge),
+                        Row(
+                          children: <Widget>[
+                            SvgPicture.asset('assets/icons/forgot.svg', height: 28),
+                            const SizedBox(width: 8),
+                            Text('Reset your password', style: Theme.of(context).textTheme.titleLarge),
+                          ],
+                        ),
                         const SizedBox(height: 12),
                         AppTextField(controller: emailCtrl, label: 'Email', keyboardType: TextInputType.emailAddress, prefixIcon: Icons.email_outlined),
                         const SizedBox(height: 16),

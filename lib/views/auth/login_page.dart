@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../controllers/auth_controller.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/app_text_field.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key}); 
@@ -28,7 +29,13 @@ class LoginPage extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                        Text('Sign in', style: Theme.of(context).textTheme.titleLarge),
+                        Row(
+                          children: <Widget>[
+                            SvgPicture.asset('assets/icons/login.svg', height: 28),
+                            const SizedBox(width: 8),
+                            Text('Sign in', style: Theme.of(context).textTheme.titleLarge),
+                          ],
+                        ),
                         const SizedBox(height: 12),
                         AppTextField(controller: emailCtrl, label: 'Email', keyboardType: TextInputType.emailAddress, prefixIcon: Icons.email_outlined),
                         const SizedBox(height: 12),

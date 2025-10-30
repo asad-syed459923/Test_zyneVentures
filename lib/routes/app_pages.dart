@@ -8,6 +8,7 @@ import '../views/product/products_page.dart';
 import '../views/auth/auth_gate_page.dart';
 import '../views/product/product_detail_page.dart';
 import '../views/product/product_form_page.dart';
+import '../views/items/items_stream_page.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -23,6 +24,7 @@ class AppPages {
       page: () => const ResetPasswordPage(),
     ),
     GetPage(name: AppRoutes.products, page: () => const ProductsPage()),
+    GetPage(name: AppRoutes.items, page: () => const ItemsStreamPage()),
     GetPage(
       name: AppRoutes.productDetail,
       page: () => const ProductDetailPage(),
