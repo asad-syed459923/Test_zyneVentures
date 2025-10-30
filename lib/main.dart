@@ -45,11 +45,11 @@ class StoreApp extends StatelessWidget {
             borderSide: BorderSide(color: scheme.primary, width: 1.6),
           ),
         ),
-        cardTheme: CardTheme(
-          elevation: 2,
-          clipBehavior: Clip.antiAlias,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        ),
+        // cardTheme: CardTheme(
+        //   elevation: 2,
+        //   clipBehavior: Clip.antiAlias,
+        //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        // ),
         floatingActionButtonTheme: FloatingActionButtonThemeData(
           backgroundColor: scheme.primary,
           foregroundColor: scheme.onPrimary,

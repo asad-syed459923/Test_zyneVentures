@@ -1,11 +1,15 @@
-// Product model representing Fake Store API product structure.
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+// Product model for Firestore
 class Product {
-  final int? id;
+  final String? id;
   final String title;
   final String description;
   final double price;
   final String category;
   final String image;
+  final DateTime createdAt;
+  final String? createdBy;
 
   Product({
     this.id,
@@ -14,37 +18,44 @@ class Product {
     required this.price,
     required this.category,
     required this.image,
-  });
+    DateTime? createdAt,
+    this.createdBy,
+  }) : createdAt = createdAt ?? DateTime.now();
 
-  factory Product.fromJson(Map<String, dynamic> json) {
+  factory Product.fromFirestore(Map<String, dynamic> json, String documentId) {
     return Product(
-      id: json['id'] is int ? json['id'] as int : int.tryParse('${json['id']}'),
+      id: documentId,
       title: json['title'] as String? ?? '',
       description: json['description'] as String? ?? '',
-      price: (json['price'] is num) ? (json['price'] as num).toDouble() : double.tryParse('${json['price']}') ?? 0.0,
+      price: (json['price'] is num) ? (json['price'] as num).toDouble() : 0.0,
       category: json['category'] as String? ?? '',
       image: json['image'] as String? ?? '',
+      createdAt: (json['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      createdBy: json['createdBy'] as String?,
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toFirestore() {
     return <String, dynamic>{
-      if (id != null) 'id': id,
       'title': title,
       'description': description,
       'price': price,
       'category': category,
       'image': image,
+      'createdAt': Timestamp.fromDate(createdAt),
+      if (createdBy != null) 'createdBy': createdBy,
     };
   }
 
   Product copyWith({
-    int? id,
+    String? id,
     String? title,
     String? description,
     double? price,
     String? category,
     String? image,
+    DateTime? createdAt,
+    String? createdBy,
   }) {
     return Product(
       id: id ?? this.id,
@@ -53,6 +64,8 @@ class Product {
       price: price ?? this.price,
       category: category ?? this.category,
       image: image ?? this.image,
+      createdAt: createdAt ?? this.createdAt,
+      createdBy: createdBy ?? this.createdBy,
     );
   }
 }

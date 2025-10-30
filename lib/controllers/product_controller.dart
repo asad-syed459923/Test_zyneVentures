@@ -1,20 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
 import '../models/product.dart';
-import '../services/api_service.dart';
-
 
 class ProductController extends GetxController {
-  ProductController({ApiService? apiService}) : _api = apiService ?? ApiService();
-
-  final ApiService _api;
+  final _firestore = FirebaseFirestore.instance;
+  final _auth = FirebaseAuth.instance;
+  
   final RxList<Product> allProducts = <Product>[].obs;
   final RxBool isLoading = false.obs;
   final RxString error = ''.obs;
+  final RxList<String> categories = <String>[].obs;
 
-
-  final int pageSize = 8;
-  
+  final int pageSize = 12;
   final RxInt currentPage = 1.obs;
 
   List<Product> get pagedProducts {
@@ -36,12 +35,23 @@ class ProductController extends GetxController {
     isLoading.value = true;
     error.value = '';
     try {
-      final List<Product> items = await _api.fetchProducts();
+      final QuerySnapshot snapshot = await _firestore.collection('products').orderBy('createdAt', descending: true).get();
+      
+      final List<Product> items = snapshot.docs.map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        return Product.fromFirestore(data, doc.id);
+      }).toList();
+      
       allProducts.assignAll(items);
       currentPage.value = 1;
+      
+      // Load unique categories
+      final Set<String> uniqueCategories = items.map((p) => p.category).toSet();
+      categories.assignAll(uniqueCategories.toList()..sort());
+      
     } catch (e) {
       error.value = '$e';
-      Get.snackbar('Error', '$e');
+      Get.snackbar('Error', 'Failed to load products: $e');
     } finally {
       isLoading.value = false;
     }
@@ -50,12 +60,21 @@ class ProductController extends GetxController {
   Future<void> addProduct(Product product) async {
     isLoading.value = true;
     try {
-      final Product created = await _api.addProduct(product);
-      allProducts.insert(0, created);
+      final user = _auth.currentUser;
+      if (user == null) throw 'User not authenticated';
+      
+      final productData = product.toFirestore()
+        ..['createdBy'] = user.uid
+        ..['createdAt'] = FieldValue.serverTimestamp();
+      
+      final docRef = await _firestore.collection('products').add(productData);
+      final newProduct = product.copyWith(id: docRef.id, createdBy: user.uid);
+      
+      allProducts.insert(0, newProduct);
       Get.back();
-      Get.snackbar('Success', 'Product added');
+      Get.snackbar('Success', 'Product added successfully');
     } catch (e) {
-      Get.snackbar('Add failed', '$e');
+      Get.snackbar('Error', 'Failed to add product: $e');
     } finally {
       isLoading.value = false;
     }
@@ -64,35 +83,42 @@ class ProductController extends GetxController {
   Future<void> updateProduct(Product product) async {
     isLoading.value = true;
     try {
-      final Product updated = await _api.updateProduct(product);
-      final int index = allProducts.indexWhere((Product p) => p.id == updated.id);
+      if (product.id == null) throw 'Product ID is required';
+      
+      await _firestore.collection('products').doc(product.id).update(product.toFirestore());
+      
+      final int index = allProducts.indexWhere((p) => p.id == product.id);
       if (index != -1) {
-        allProducts[index] = updated;
+        allProducts[index] = product;
         allProducts.refresh();
       }
+      
       Get.back();
-      Get.snackbar('Success', 'Product updated');
+      Get.snackbar('Success', 'Product updated successfully');
     } catch (e) {
-      Get.snackbar('Update failed', '$e');
+      Get.snackbar('Error', 'Failed to update product: $e');
     } finally {
       isLoading.value = false;
     }
   }
 
-  Future<void> deleteProduct(int id) async {
-    isLoading.value = true;
+  Future<void> deleteProduct(String id) async {
     try {
-      final bool ok = await _api.deleteProduct(id);
-      if (ok) {
-        allProducts.removeWhere((Product p) => p.id == id);
-        Get.snackbar('Deleted', 'Product removed');
-      } else {
-        Get.snackbar('Delete failed', 'Server rejected the request');
+      final user = _auth.currentUser;
+      if (user == null) throw 'User not authenticated';
+      
+      // Optional: Check if user has permission to delete
+      final doc = await _firestore.collection('products').doc(id).get();
+      final data = doc.data();
+      if (data?['createdBy'] != user.uid) {
+        throw 'You can only delete your own products';
       }
+      
+      await _firestore.collection('products').doc(id).delete();
+      allProducts.removeWhere((p) => p.id == id);
+      Get.snackbar('Success', 'Product deleted successfully');
     } catch (e) {
-      Get.snackbar('Delete failed', '$e');
-    } finally {
-      isLoading.value = false;
+      Get.snackbar('Error', 'Failed to delete product: $e');
     }
   }
 
