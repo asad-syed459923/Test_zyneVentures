@@ -103,44 +103,40 @@ class ProductGridItem extends StatelessWidget {
                             color: colorScheme.onSurfaceVariant,
                           ),
                         ),
-                        const Spacer(),
 
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Flexible(
-                              child: Text(
-                                '\$${product.price.toStringAsFixed(1)}',
-                                style: textTheme.titleMedium?.copyWith(
-                                  color: colorScheme.primary,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                        // const Spacer(),
+                        Flexible(
+                          child: Text(
+                            '\$${product.price.toStringAsFixed(1)}',
+                            style: textTheme.titleMedium?.copyWith(
+                              color: colorScheme.primary,
+                              fontWeight: FontWeight.bold,
                             ),
-                            Row(
-                              children: [
-                                IconButton(
-                                  visualDensity: VisualDensity.compact,
-                                  icon: Icon(
-                                    Icons.edit_outlined,
-                                    color: colorScheme.primary,
-                                  ),
-                                  tooltip: 'Edit product',
-                                  onPressed: onEdit,
-                                ),
-                                IconButton(
-                                  visualDensity: VisualDensity.compact,
-                                  icon: Icon(
-                                    Icons.delete_outline,
-                                    color: colorScheme.error,
-                                  ),
-                                  tooltip: 'Delete product',
-                                  onPressed: onDelete,
-                                ),
-                              ],
-                            ),
-                          ],
+                          ),
                         ),
+
+                        // Row(
+                        //   children: [
+                        //     IconButton(
+                        //       visualDensity: VisualDensity.compact,
+                        //       icon: Icon(
+                        //         Icons.edit_outlined,
+                        //         color: colorScheme.primary,
+                        //       ),
+                        //       tooltip: 'Edit product',
+                        //       onPressed: onEdit,
+                        //     ),
+                        //     IconButton(
+                        //       visualDensity: VisualDensity.compact,
+                        //       icon: Icon(
+                        //         Icons.delete_outline,
+                        //         color: colorScheme.error,
+                        //       ),
+                        //       tooltip: 'Delete product',
+                        //       onPressed: onDelete,
+                        //     ),
+                        //   ],
+                        // ),
                       ],
                     ),
                   ),

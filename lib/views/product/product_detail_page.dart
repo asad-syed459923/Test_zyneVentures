@@ -59,7 +59,7 @@ class ProductDetailPage extends StatelessWidget {
                       );
                       if (confirm == true) {
                         await controller.deleteProduct(product.id!);
-                        Get.back();
+                        Get.toNamed(AppRoutes.products);
                       }
                     },
           ),
@@ -150,66 +150,50 @@ class ProductDetailPage extends StatelessWidget {
                     ),
                   ),
                 ),
+                const SizedBox(height: 16),
+                Container(
+                  margin: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        blurRadius: 6,
+                        spreadRadius: 2,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Terms & Conditions',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      const Text(
+                        '1. The product can be returned within 7 days of delivery.\n\n'
+                        '2. The product must be unused and in original packaging.\n\n'
+                        '3. Refunds will be processed within 5–7 business days.\n\n'
+                        '4. Any damage after delivery is not covered.\n\n'
+                        '5. Prices and policies are subject to change without prior notice.',
+                        style: TextStyle(
+                          fontSize: 14,
+                          height: 1.5,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
-          ),
-        ),
-      ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed:
-                      () => Get.toNamed(
-                        AppRoutes.productForm,
-                        arguments: product,
-                      ),
-                  icon: const Icon(Icons.edit_outlined),
-                  label: const Text('Edit'),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: FilledButton.icon(
-                  onPressed:
-                      product.id == null
-                          ? null
-                          : () async {
-                            final bool? confirm = await showDialog<bool>(
-                              context: context,
-                              builder:
-                                  (BuildContext ctx) => AlertDialog(
-                                    title: const Text('Delete product'),
-                                    content: const Text(
-                                      'This action cannot be undone.',
-                                    ),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed:
-                                            () => Navigator.of(ctx).pop(false),
-                                        child: const Text('Cancel'),
-                                      ),
-                                      FilledButton(
-                                        onPressed:
-                                            () => Navigator.of(ctx).pop(true),
-                                        child: const Text('Delete'),
-                                      ),
-                                    ],
-                                  ),
-                            );
-                            if (confirm == true) {
-                              await controller.deleteProduct(product.id!);
-                              Get.back();
-                            }
-                          },
-                  icon: const Icon(Icons.delete_outline),
-                  label: const Text('Delete'),
-                ),
-              ),
-            ],
           ),
         ),
       ),

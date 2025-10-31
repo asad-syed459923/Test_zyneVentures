@@ -27,7 +27,7 @@ class ProductsPage extends StatelessWidget {
         ),
         actions: <Widget>[
           IconButton(
-            onPressed: () => controller.loadProducts(),
+            onPressed: () => controller.resetAndFetch(),
             icon: const Icon(Icons.refresh),
             tooltip: 'Refresh products',
           ),
@@ -38,12 +38,14 @@ class ProductsPage extends StatelessWidget {
           ),
         ],
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => Get.toNamed(AppRoutes.productForm),
         icon: const Icon(Icons.add),
         label: const Text('Add Product'),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
+
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(
@@ -72,7 +74,7 @@ class ProductsPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 FilledButton.icon(
-                  onPressed: controller.loadProducts,
+                  onPressed: controller.resetAndFetch,
                   icon: const Icon(Icons.refresh),
                   label: const Text('Retry'),
                 ),
@@ -87,7 +89,7 @@ class ProductsPage extends StatelessWidget {
           ...controller.categories,
         ];
         final String currentCat = selectedCategory.value;
-        final List<Product> baseItems = controller.pagedProducts;
+        final List<Product> baseItems = controller.allProducts;
         final List<Product> items =
             currentCat == 'All'
                 ? baseItems
@@ -154,86 +156,54 @@ class ProductsPage extends StatelessWidget {
                           ],
                         ),
                       )
-                      : GridView.builder(
-                        padding: const EdgeInsets.all(16),
-                        gridDelegate:
-                            const SliverGridDelegateWithMaxCrossAxisExtent(
-                              maxCrossAxisExtent: 280,
-                              crossAxisSpacing: 16,
-                              mainAxisSpacing: 16,
-                              childAspectRatio: 0.62,
-                            ),
-                        itemCount: items.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          final Product p = items[index];
-                          return ProductGridItem(
-                            product: p,
-                            onTap:
-                                () => Get.toNamed(
-                                  AppRoutes.productDetail,
-                                  arguments: p,
-                                ),
-                            onEdit:
-                                () => Get.toNamed(
-                                  AppRoutes.productForm,
-                                  arguments: p,
-                                ),
-                            onDelete: () => controller.deleteProduct(p.id!),
-                          );
+                      : NotificationListener<ScrollNotification>(
+                        onNotification: (ScrollNotification n) {
+                          if (n.metrics.pixels >=
+                                  n.metrics.maxScrollExtent - 200 &&
+                              controller.hasMore.value &&
+                              !controller.isFetchingMore.value) {
+                            controller.fetchMore();
+                          }
+                          return false;
                         },
+                        child: GridView.builder(
+                          padding: const EdgeInsets.all(16),
+                          gridDelegate:
+                              const SliverGridDelegateWithMaxCrossAxisExtent(
+                                maxCrossAxisExtent: 280,
+                                crossAxisSpacing: 16,
+                                mainAxisSpacing: 16,
+                                childAspectRatio: 0.62,
+                              ),
+                          itemCount: items.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final Product p = items[index];
+                            return ProductGridItem(
+                              product: p,
+                              onTap:
+                                  () => Get.toNamed(
+                                    AppRoutes.productDetail,
+                                    arguments: p,
+                                  ),
+                              onEdit:
+                                  () => Get.toNamed(
+                                    AppRoutes.productForm,
+                                    arguments: p,
+                                  ),
+                              onDelete: () => controller.deleteProduct(p.id!),
+                            );
+                          },
+                        ),
                       ),
             ),
-            // Pagination
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 8,
-                    offset: const Offset(0, -2),
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  IconButton(
-                    onPressed:
-                        controller.currentPage.value > 1
-                            ? controller.prevPage
-                            : null,
-                    icon: const Icon(Icons.chevron_left),
-                    tooltip: 'Previous page',
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      'Page ${controller.currentPage} of ${controller.totalPages}',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimaryContainer,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed:
-                        controller.currentPage.value < controller.totalPages
-                            ? controller.nextPage
-                            : null,
-                    icon: const Icon(Icons.chevron_right),
-                    tooltip: 'Next page',
-                  ),
-                ],
-              ),
+            Obx(
+              () =>
+                  controller.isFetchingMore.value
+                      ? const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 12),
+                        child: Center(child: CircularProgressIndicator()),
+                      )
+                      : const SizedBox.shrink(),
             ),
           ],
         );
